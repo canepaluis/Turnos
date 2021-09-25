@@ -5,7 +5,7 @@
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<h1>Index</h1>
+<h1>Principal</h1>
 
 <p>
     <a asp-action="Create" class="btn-floating btn-large green darken-1"><i class="material-icons">person_add</i></a>
@@ -34,11 +34,11 @@
             <th>
                 @Html.DisplayNameFor(model => model.HorarioAtencionHasta)
             </th>
-            <th></th>
+            <th>Opciones</th>
         </tr>
     </thead>
     <tbody>
-@foreach (var item in Model) {
+       @foreach (var item in Model) {
         <tr>
             <td>
                 @Html.DisplayFor(modelItem => item.Nombre)
@@ -67,6 +67,6 @@
                 <a asp-action="Delete" asp-route-id="@item.IdMedico"><i class="material-icons red-text">delete</i></a>
             </td>
         </tr>
-}
+       }
     </tbody>
 </table>

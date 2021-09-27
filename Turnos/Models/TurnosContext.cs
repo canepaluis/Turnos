@@ -14,6 +14,8 @@ namespace Turnos.Models
         public DbSet<Paciente> Paciente { get; set; }
         public DbSet<Medico> Medico { get; set; }
         public DbSet<MedicoEspecialidad> MedicoEspecialidad { get; set; }
+        public DbSet<Turno> Turno { get; set; }
+        public DbSet<Login> Login { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -110,6 +112,46 @@ namespace Turnos.Models
             modelBuilder.Entity<MedicoEspecialidad>().HasOne(x => x.Especialidad)
                 .WithMany(p => p.MedicoEspecialidad)
                 .HasForeignKey(p => p.IdEspecialidad);
+
+            modelBuilder.Entity<Turno>(entidad =>
+            {
+                entidad.ToTable("Turno");
+
+                entidad.HasKey(m => m.IdTurno);
+
+                entidad.Property(m => m.IdPaciente)
+                .IsRequired()
+                .IsUnicode(false);
+
+                entidad.Property(m => m.FechaHoraInicio)
+                .IsRequired()
+                .IsUnicode(false);
+
+                entidad.Property(m => m.FechaHoraFin)
+                .IsRequired()
+                .IsUnicode(false);
+            });
+
+            modelBuilder.Entity<Turno>().HasOne(x => x.Paciente)
+                .WithMany(p => p.Turno)
+                .HasForeignKey(p => p.IdPaciente);
+
+            modelBuilder.Entity<Turno>().HasOne(x => x.Medico)
+                .WithMany(p => p.Turno)
+                .HasForeignKey(p => p.IdMedico);
+
+            modelBuilder.Entity<Login>(entidad =>
+            {
+                entidad.ToTable("Login");
+
+                entidad.HasKey(l => l.LoginId);
+
+                entidad.Property(l => l.Usuario)
+                .IsRequired();
+
+                entidad.Property(l => l.Password)
+                .IsRequired();
+            });
         }
 
         

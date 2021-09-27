@@ -10,6 +10,10 @@ namespace Turnos.Models
     {
         [Key]
         public int IdEspecialidad { get; set; }
+
+        [StringLength(200, ErrorMessage = "El campo descripción debe tener como máximo 200 caractéres")]
+        [Required (ErrorMessage = "Debe ingresar una descripción")]
+        [Display(Name = "Descripción", Prompt ="Ingrese una descripción")]
         public string Descripcion { get; set; }
         public List<MedicoEspecialidad> MedicoEspecialidad { get; set; }
     }

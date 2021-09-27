@@ -37,6 +37,26 @@ namespace Turnos.Migrations
                     b.ToTable("Especialidad");
                 });
 
+            modelBuilder.Entity("Turnos.Models.Login", b =>
+                {
+                    b.Property<int>("LoginId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<string>("Password")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Usuario")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("LoginId");
+
+                    b.ToTable("Login");
+                });
+
             modelBuilder.Entity("Turnos.Models.Medico", b =>
                 {
                     b.Property<int>("IdMedico")
@@ -144,6 +164,37 @@ namespace Turnos.Migrations
                     b.ToTable("Paciente");
                 });
 
+            modelBuilder.Entity("Turnos.Models.Turno", b =>
+                {
+                    b.Property<int>("IdTurno")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<DateTime>("FechaHoraFin")
+                        .IsUnicode(false)
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime>("FechaHoraInicio")
+                        .IsUnicode(false)
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("IdMedico")
+                        .HasColumnType("int");
+
+                    b.Property<int>("IdPaciente")
+                        .IsUnicode(false)
+                        .HasColumnType("int");
+
+                    b.HasKey("IdTurno");
+
+                    b.HasIndex("IdMedico");
+
+                    b.HasIndex("IdPaciente");
+
+                    b.ToTable("Turno");
+                });
+
             modelBuilder.Entity("Turnos.Models.MedicoEspecialidad", b =>
                 {
                     b.HasOne("Turnos.Models.Especialidad", "Especialidad")
@@ -163,6 +214,25 @@ namespace Turnos.Migrations
                     b.Navigation("Medico");
                 });
 
+            modelBuilder.Entity("Turnos.Models.Turno", b =>
+                {
+                    b.HasOne("Turnos.Models.Medico", "Medico")
+                        .WithMany("Turno")
+                        .HasForeignKey("IdMedico")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Turnos.Models.Paciente", "Paciente")
+                        .WithMany("Turno")
+                        .HasForeignKey("IdPaciente")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Medico");
+
+                    b.Navigation("Paciente");
+                });
+
             modelBuilder.Entity("Turnos.Models.Especialidad", b =>
                 {
                     b.Navigation("MedicoEspecialidad");
@@ -171,6 +241,13 @@ namespace Turnos.Migrations
             modelBuilder.Entity("Turnos.Models.Medico", b =>
                 {
                     b.Navigation("MedicoEspecialidad");
+
+                    b.Navigation("Turno");
+                });
+
+            modelBuilder.Entity("Turnos.Models.Paciente", b =>
+                {
+                    b.Navigation("Turno");
                 });
 #pragma warning restore 612, 618
         }

@@ -80,6 +80,7 @@ namespace Turnos.Controllers
             return RedirectToAction(nameof(Index));
         }
 
+
         public IActionResult Create()
         {
 
@@ -87,6 +88,7 @@ namespace Turnos.Controllers
         }
 
         [HttpPost]
+        
         public async Task<IActionResult> Create([Bind("IdEspecialidad, Descripcion")] Especialidad especialidad)
         {
             if (ModelState.IsValid)

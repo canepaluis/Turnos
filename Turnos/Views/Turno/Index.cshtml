@@ -1,5 +1,5 @@
 ﻿@model Turnos.Models.Turno
-
+@Html.AntiForgeryToken() <!--generar el token aún sin forms-->
 @{
     ViewBag.Title = "Asignación de Turnos";
 }
@@ -15,6 +15,7 @@
         <select asp-for="IdPaciente" asp-items="ViewBag.IdPaciente" class="browser-default">
         </select>
     </div>
+
 </div>
 <br />
 <div id="ModalTurno" class="modal">
@@ -29,6 +30,10 @@
                 <label>Fin</label>
                 <input type="text" id="txtFechaHoraFin" readonly="readonly" />
             </div>
+            <div>
+                <label>Paciente</label>
+                <input type="text" id="txtPaciente" readonly="readonly" />
+            </div>
         </form>
     </div>
     <div class="modal-footer">
@@ -40,9 +45,14 @@
 
 <div id="CalendarioTurnos"></div>
 
-
+<link href="~/fullcalendar/fullcalendar.css" rel="stylesheet" />
+<link href="~/fullcalendar/fullcalendar.print.css" rel="stylesheet" media="print"/>
 
 @section Scripts{
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.18.1/moment.min.js"></script>
+    <script src="~/fullcalendar/fullcalendar.min.js"></script>
+    <script src="~/fullcalendar/locale/es.js"></script>
+
 
     <script>
         $(document).ready(function () {
@@ -73,6 +83,7 @@
                                 idMedico: v.idMedico,
                                 start: moment(v.fechaHoraInicio),
                                 end: v.fechaHoraFin != null ? moment(v.fechaHoraFin) : null,
+                                paciente: v.paciente
                             })
                         })
                         GenerarCalendario(turnos);
@@ -153,11 +164,12 @@
                 if (turnoSeleccionado.idTurno == 0) {
                     $('$btnGuardar').show();
                     $('$btnEliminar').hide();
+                    $('#txtPaciente').val($('#IdPaciente option:selected').text());
                 } else {
                     $('$btnGuardar').hide();
                     $('$btnEliminar').show();
+                    $('#txtPaciente').val(turnoSeleccionado.paciente);
                 }
-
                 $('#ModalTurno').modal('open');
             }
 
@@ -175,6 +187,7 @@
                     type: "POST",
                     url: 'Turno/GrabarTurno',
                     data: { 'turno': data },
+                    headers: { 'RequestVerificationToken': $('input[name="__RequestVerificationToken"]').val() },
                     success: function (e) {
                         if (e.ok) {
                             ObtenerTurnosYActualizar($('#IdMedico').val());
@@ -191,7 +204,8 @@
                     $.ajax({
                         type: "POST",
                         url: 'Turno/EliminarTurno',
-                        data { 'IdTurno': turnoSeleccionado.idTurno },
+                        data: { 'IdTurno': turnoSeleccionado.idTurno },
+                        headers: { 'RequestVerificationToken': $('input[name="__RequestVerificationToken"]').val() },
                         success: function (e) {
                             if (e.ok) {
                                 ObtenerTurnosYActualizar($('#IdMedico').val());
@@ -202,7 +216,7 @@
                         }
                     })
                 }
+            }
             })
-        })
     </script>
 }
